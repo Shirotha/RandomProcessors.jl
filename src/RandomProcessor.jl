@@ -10,13 +10,15 @@ struct RandomProcessor{T}
     end
 end
 
+eltype(::Type{RandomProcessor{T}}) where T = T
+
 function Sampler(rng::AbstractRNG, proc::RandomProcessor, repetition::Repetition)
     sampler = Sampler(rng, proc.value, repetition)
     return SamplerSimple(proc.reduce, sampler)
 end
 
-function (proc::RandomProcessor{T})(; repeat=1, keep_naturals=false) where T
-    nats = rand(proc.value, repeat)
+function (proc::RandomProcessor{T})(rng=Random.GLOBAL_RNG; repeat=1, keep_naturals=false) where T
+    nats = rand(rng, proc.value, repeat)
     result = proc.reduce.(nats)
     if keep_naturals
         return result, nats

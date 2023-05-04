@@ -133,6 +133,8 @@ end
 
 const DiceExpressionSampler{F, T} = SamplerSimple{RandomFunction{F}, T}
 
+eltype(::Type{DiceExpression{T, N, F}}) where {T, N, F} = eltype(F)
+
 function Sampler(rng::AbstractRNG, expr::DiceExpression, repetition::Repetition)
     samplers = Sampler.((rng,), expr.rollers, (repetition,))
     f = RandomFunction(expr.reduce)
